@@ -6,8 +6,11 @@ import { ValueProposition } from '../components/ValueProposition';
 import { HostCTA } from '../components/HostCTA';
 import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
+import { useSpaceType } from '../hooks/useSpaceType';
 
 export function Home() {
+  const { spaceType } = useSpaceType();
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -15,7 +18,7 @@ export function Home() {
         <Hero />
         <SpaceForEveryMoment />
         <ValueProposition />
-        <PopularSpaces />
+        <PopularSpaces spaceType={spaceType} />
         <HostCTA />
       </main>
       <Footer />
