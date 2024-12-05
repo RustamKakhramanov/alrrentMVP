@@ -104,10 +104,10 @@ export function FilterDrawer({
             selectedAmenities={filters.selectedAmenities}
             onAmenityToggle={handleAmenityToggle}
           />
-          <SpaceTypeFilter
+          {/* <SpaceTypeFilter
             selectedTypes={filters.selectedTypes}
             onTypeToggle={handleTypeToggle}
-          />
+          /> */}
         </div>
 
         <div className="sticky bottom-0 bg-white border-t p-4">

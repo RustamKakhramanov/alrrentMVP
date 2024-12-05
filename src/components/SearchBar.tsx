@@ -11,13 +11,34 @@ import { trackEvent } from '../utils/analytics';
 import { analyticsConfig } from '../config/analytics';
 import { useClickOutside } from '../hooks/useClickOutside';
 import { filterLocations } from '../utils/searchUtils';
+import { useSpaceType } from '../hooks/useSpaceType';
+
+const getActivityByType = (type: string | null): string => {
+  switch (type) {
+    case 'photo':
+      return 'Фотосессия';
+    case 'podcast':
+      return 'Подкаст';
+    case 'event':
+      return 'Мероприятие';
+    case 'mastermind':
+      return 'Мастермайнд';
+    case 'conference':
+      return 'Конференция';
+    case 'workshop':
+      return 'Мастер-класс';
+    default:
+      return '';
+  }
+};
 
 export function SearchBar() {
   const navigate = useNavigate();
+  const { spaceType } = useSpaceType();
   const activityRef = useRef<HTMLDivElement>(null);
   const locationRef = useRef<HTMLDivElement>(null);
   const dateTimeRef = useRef<HTMLDivElement>(null);
-  const [eventType, setEventType] = useState('');
+  const [eventType, setEventType] = useState(getActivityByType(spaceType));
   const [location, setLocation] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [startTime, setStartTime] = useState('');
@@ -31,6 +52,10 @@ export function SearchBar() {
   useClickOutside(activityRef, () => setShowActivitySuggestions(false));
   useClickOutside(locationRef, () => setShowLocationSuggestions(false));
   useClickOutside(dateTimeRef, () => setIsDateTimePickerOpen(false));
+
+  useEffect(() => {
+    setEventType(getActivityByType(spaceType));
+  }, [spaceType]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -62,13 +87,15 @@ export function SearchBar() {
     if (selectedDate) params.append('date', selectedDate.toISOString());
     if (startTime) params.append('startTime', startTime);
     if (endTime) params.append('endTime', endTime);
+    if (spaceType) params.append('type', spaceType);
 
     trackEvent(analyticsConfig.googleAnalytics.events.search, {
       eventType,
       location,
       date: selectedDate ? format(selectedDate, 'yyyy-MM-dd') : null,
       startTime,
-      endTime
+      endTime,
+      spaceType
     });
 
     navigate(`/search?${params.toString()}`);
@@ -159,7 +186,7 @@ export function SearchBar() {
         </div>
 
         {/* Date/Time Selection */}
-        <div className="flex-1 p-4 border-b md:border-b-0 md:border-r border-gray-200">
+        <div className="flex-1 p-4 border-b md:border-b-0 md:border-r border-gray-200" ref={dateTimeRef}>
           <label className="block text-sm text-gray-500 mb-1">Когда?</label>
           <button
             onClick={() => setIsDateTimePickerOpen(true)}
@@ -170,6 +197,43 @@ export function SearchBar() {
               {formattedDateTime || 'Выберите дату и время'}
             </span>
           </button>
+
+          {/* Desktop Date/Time Picker */}
+          {!isMobileView && isDateTimePickerOpen && (
+            <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-xl z-50">
+              <div className="p-6">
+                <div className="grid grid-cols-2 gap-6">
+                  <DatePicker
+                    selectedDate={selectedDate}
+                    onDateSelect={setSelectedDate}
+                    onClose={() => { }}
+                  />
+                  <div className="space-y-4">
+                    <TimePicker
+                      label="Время начала"
+                      value={startTime}
+                      onChange={setStartTime}
+                      selectedDate={selectedDate}
+                    />
+                    <TimePicker
+                      label="Время окончания"
+                      value={endTime}
+                      onChange={setEndTime}
+                      selectedDate={selectedDate}
+                    />
+                  </div>
+                </div>
+                <div className="mt-6 flex justify-end">
+                  <button
+                    onClick={() => setIsDateTimePickerOpen(false)}
+                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  >
+                    Применить
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Search Button */}
@@ -184,7 +248,7 @@ export function SearchBar() {
       </div>
 
       {/* Mobile Date/Time Picker */}
-      {isMobileView ? (
+      {isMobileView && (
         <MobileDateTimePicker
           isOpen={isDateTimePickerOpen}
           onClose={() => setIsDateTimePickerOpen(false)}
@@ -195,42 +259,6 @@ export function SearchBar() {
           onStartTimeChange={setStartTime}
           onEndTimeChange={setEndTime}
         />
-      ) : (
-        isDateTimePickerOpen && (
-          <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-xl z-50" ref={dateTimeRef}>
-            <div className="p-6">
-              <div className="grid grid-cols-2 gap-6">
-                <DatePicker
-                  selectedDate={selectedDate}
-                  onDateSelect={setSelectedDate}
-                  onClose={() => { }}
-                />
-                <div className="space-y-4">
-                  <TimePicker
-                    label="Время начала"
-                    value={startTime}
-                    onChange={setStartTime}
-                    selectedDate={selectedDate}
-                  />
-                  <TimePicker
-                    label="Время окончания"
-                    value={endTime}
-                    onChange={setEndTime}
-                    selectedDate={selectedDate}
-                  />
-                </div>
-              </div>
-              <div className="mt-6 flex justify-end">
-                <button
-                  onClick={() => setIsDateTimePickerOpen(false)}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                >
-                  Применить
-                </button>
-              </div>
-            </div>
-          </div>
-        )
       )}
     </div>
   );

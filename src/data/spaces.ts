@@ -574,3 +574,9 @@ export const SPACES: Record<number, Space> = {
     activities: ['corporate', 'workshop']
   }
 };
+
+export function getPopularSpaces(): Space[] {
+  return Object.values(SPACES)
+    .sort((a, b) => b.rating - a.rating)
+    .slice(0, 6);
+}

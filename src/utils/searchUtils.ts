@@ -6,11 +6,11 @@ import { ACTIVITIES } from '../config/activities';
 
 export function filterLocations(searchTerm: string): string[] {
   if (!searchTerm) {
-    return Object.values(LOCATIONS).flatMap(cityData => 
+    return Object.values(LOCATIONS).flatMap(cityData =>
       cityData.districts.map(district => `${cityData.city}, ${district}`)
     );
   }
-  
+
   const normalizedSearch = searchTerm.toLowerCase();
   const results: string[] = [];
 
@@ -29,17 +29,43 @@ export function filterLocations(searchTerm: string): string[] {
   return results;
 }
 
-export function filterSpaces(filters: SearchFilters): Space[] {
-  const baseSpaces = Object.values(SPACES);
-  
-  return baseSpaces.map(space => {
+export function filterSpaces(filters: SearchFilters, spaceType?: string): Space[] {
+  let data = Object.values(SPACES);
+
+  if (spaceType) {
+    data = Object.values(SPACES).filter(space => {
+      switch (spaceType) {
+        case 'photo':
+          if (space.type !== 'studio') return false;
+          break;
+        case 'podcast':
+          if (!['podcast', 'recording'].includes(space.type)) return false;
+          break;
+        case 'event':
+          if (!['event', 'conference'].includes(space.type)) return false;
+          break;
+        case 'mastermind':
+          if (!['meeting', 'conference'].includes(space.type)) return false;
+          break;
+        case 'conference':
+          if (space.type !== 'conference') return false;
+          break;
+        case 'workshop':
+          if (!['event', 'workshop'].includes(space.type)) return false;
+          break;
+      }
+    });
+  }
+
+
+  return data.filter(space => {
     // Create a copy of the space
     const newSpace = { ...space };
-    
+
     // If location filter is active, update the space location
     if (filters.location) {
       newSpace.location = filters.location;
-      
+
       // Update coordinates based on the selected district
       const coordinates = getDistrictCoordinates(filters.location);
       if (coordinates) {
@@ -52,7 +78,7 @@ export function filterSpaces(filters: SearchFilters): Space[] {
         ];
       }
     }
-    
+
     return newSpace;
   }).filter(space => {
     // Activity filter
@@ -60,7 +86,7 @@ export function filterSpaces(filters: SearchFilters): Space[] {
       const selectedActivity = ACTIVITIES.find(
         activity => activity.title === filters.selectedTypes[0]
       );
-      
+
       if (selectedActivity) {
         // Check if the space type matches any of the allowed types for this activity
         const isValidSpaceType = selectedActivity.spaceTypes.includes(space.type);
@@ -69,7 +95,7 @@ export function filterSpaces(filters: SearchFilters): Space[] {
         }
       } else {
         // If activity not found, check direct match with space activities
-        const hasMatchingActivity = filters.selectedTypes.some(activity => 
+        const hasMatchingActivity = filters.selectedTypes.some(activity =>
           space.activities.includes(activity)
         );
         if (!hasMatchingActivity) {
@@ -120,7 +146,7 @@ export function getDistrictCoordinates(location: string): { lat: number; lng: nu
     'Жетысуский район': { lat: 43.241484, lng: 76.908732 },
     'Наурызбайский район': { lat: 43.221484, lng: 76.918732 },
     'Алатауский район': { lat: 43.281484, lng: 76.928732 },
-    
+
     // Петропавловск
     'Центральный район': { lat: 54.874482, lng: 69.141768 },
     'Промышленный район': { lat: 54.864482, lng: 69.151768 },
@@ -129,7 +155,7 @@ export function getDistrictCoordinates(location: string): { lat: number; lng: nu
     'ПЗТМ': { lat: 54.859482, lng: 69.136768 },
     '19-й микрорайон': { lat: 54.879482, lng: 69.156768 },
     '20-й микрорайон': { lat: 54.889482, lng: 69.166768 },
-    
+
     // Астана
     'Есильский район': { lat: 51.128199, lng: 71.430115 },
     'Алматинский район': { lat: 51.138199, lng: 71.440115 },
