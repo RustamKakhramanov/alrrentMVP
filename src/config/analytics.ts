@@ -11,7 +11,7 @@ export const analyticsConfig = {
       dateSelect: 'date_select',
       filterApply: 'filter_apply',
       footerLinkClick: 'footer_link_click',
-      bookingAttempt: 'bookingAttempt',
+      bookingAttempt: 'booking_attempt',
       feedbackSubmit: 'feedback_submit'
     }
   },
@@ -27,6 +27,7 @@ export const analyticsConfig = {
       dateSelect: 'date_select',
       filterApply: 'filter_apply',
       footerLinkClick: 'footer_link_click',
+      bookingAttempt: 'booking_attempt',
       feedbackSubmit: 'feedback_submit'
     }
   }

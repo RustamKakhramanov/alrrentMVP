@@ -223,7 +223,7 @@ export const SPACES: Record<number, Space> = {
     rating: 4.7,
     description: 'Стильная фотостудия с уникальными зеркальными инсталляциями и световыми решениями.',
     images: [
-      'https://images.unsplash.com/photo-1589135714669-0d067f35d955?auto=format&fit=crop&q=80'
+      'https://plus.unsplash.com/premium_photo-1696972235468-3bfa7fa8bd9e?auto=format&fit=crop&q=80'
     ],
     amenities: [
       { id: 'mirrors', name: 'Зеркальные инсталляции' },
@@ -336,14 +336,14 @@ export const SPACES: Record<number, Space> = {
 
   21: {
     id: 21,
-    title: 'Подкаст-студия «Эфир»',
+    title: 'Подкаст-студия «ПетроПодкаст»',
     location: 'Петропавловск, Центральный район, ул. Театральная',
     price: 8000,
     capacity: 5,
     rating: 4.7,
     description: 'Современная студия для записи подкастов с профессиональной акустической обработкой.',
     images: [
-      'https://images.unsplash.com/photo-1604328698692-f76ea9498e76?auto=format&fit=crop&q=80'
+      'https://plus.unsplash.com/premium_photo-1683140721527-262985d7c8ef?auto=format&fit=crop&q=80'
     ],
     amenities: [
       { id: 'acoustic', name: 'Акустическая обработка' },
@@ -391,7 +391,7 @@ export const SPACES: Record<number, Space> = {
     rating: 4.9,
     description: 'Инновационный конференц-центр с возможностью проведения гибридных мероприятий.',
     images: [
-      'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&q=80'
+      'https://images.unsplash.com/photo-1531972111231-7482a960e109?auto=format&fit=crop&q=80'
     ],
     amenities: [
       { id: 'streaming', name: 'Система стриминга' },
@@ -415,7 +415,7 @@ export const SPACES: Record<number, Space> = {
     rating: 4.8,
     description: 'Элегантный банкетный зал с национальным колоритом и современным оснащением.',
     images: [
-      'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80'
+      'https://plus.unsplash.com/premium_photo-1664304118366-216dbb7c76cf?auto=format&fit=crop&q=80'
     ],
     amenities: [
       { id: 'kitchen', name: 'Профессиональная кухня' },
