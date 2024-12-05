@@ -16,6 +16,7 @@ export function SearchBar() {
   const navigate = useNavigate();
   const activityRef = useRef<HTMLDivElement>(null);
   const locationRef = useRef<HTMLDivElement>(null);
+  const dateTimeRef = useRef<HTMLDivElement>(null);
   const [eventType, setEventType] = useState('');
   const [location, setLocation] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -29,6 +30,7 @@ export function SearchBar() {
 
   useClickOutside(activityRef, () => setShowActivitySuggestions(false));
   useClickOutside(locationRef, () => setShowLocationSuggestions(false));
+  useClickOutside(dateTimeRef, () => setIsDateTimePickerOpen(false));
 
   useEffect(() => {
     const handleResize = () => {
@@ -54,7 +56,7 @@ export function SearchBar() {
 
   const handleSearch = () => {
     const params = new URLSearchParams();
-    
+
     if (eventType) params.append('activity', eventType);
     if (location) params.append('location', location);
     if (selectedDate) params.append('date', selectedDate.toISOString());
@@ -68,7 +70,7 @@ export function SearchBar() {
       startTime,
       endTime
     });
-    
+
     navigate(`/search?${params.toString()}`);
   };
 
@@ -91,10 +93,10 @@ export function SearchBar() {
               className="w-full pl-4 pr-10 py-2 text-lg border-0 focus:ring-0 placeholder-gray-400"
             />
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-            
+
             {showActivitySuggestions && (
               <div className="absolute top-full left-0 right-0 bg-white mt-1 rounded-lg shadow-lg z-50 max-h-60 overflow-auto">
-                {ACTIVITIES.filter(activity => 
+                {ACTIVITIES.filter(activity =>
                   activity.title.toLowerCase().includes(eventType.toLowerCase())
                 ).map((activity) => (
                   <button
@@ -133,7 +135,7 @@ export function SearchBar() {
               className="w-full pl-4 pr-10 py-2 text-lg border-0 focus:ring-0 placeholder-gray-400"
             />
             <MapPin className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-            
+
             {showLocationSuggestions && (
               <div className="absolute top-full left-0 right-0 bg-white mt-1 rounded-lg shadow-lg z-50 max-h-60 overflow-auto">
                 {locationSuggestions.map((suggestion) => (
@@ -172,7 +174,7 @@ export function SearchBar() {
 
         {/* Search Button */}
         <div className="p-4 md:w-auto">
-          <button 
+          <button
             onClick={handleSearch}
             className="w-full md:w-[140px] px-8 py-3 bg-black text-white rounded-lg hover:bg-black/90 transition-colors"
           >
@@ -195,13 +197,13 @@ export function SearchBar() {
         />
       ) : (
         isDateTimePickerOpen && (
-          <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-xl z-50">
+          <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-xl z-50" ref={dateTimeRef}>
             <div className="p-6">
               <div className="grid grid-cols-2 gap-6">
                 <DatePicker
                   selectedDate={selectedDate}
                   onDateSelect={setSelectedDate}
-                  onClose={() => {}}
+                  onClose={() => { }}
                 />
                 <div className="space-y-4">
                   <TimePicker

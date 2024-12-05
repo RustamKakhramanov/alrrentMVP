@@ -9,7 +9,7 @@ import { filterSpaces, getDistrictCoordinates } from '../utils/searchUtils';
 
 export function Search() {
   const [selectedSpace, setSelectedSpace] = useState<number | null>(null);
-  const [showMap, setShowMap] = useState(true);
+  const [showMap, setShowMap] = useState(false);
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
   const [filters, setFilters] = useState<SearchFilters>({
     minPrice: 0,
@@ -123,8 +123,8 @@ export function Search() {
     <div className="h-screen flex flex-col">
       <div className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link 
-            to="/" 
+          <Link
+            to="/"
             className="inline-flex items-center text-gray-600 hover:text-gray-900"
           >
             <ArrowLeft className="w-5 h-5 mr-2" />
@@ -135,7 +135,7 @@ export function Search() {
           </div>
         </div>
       </div>
-      
+
       <div className="flex-1 flex flex-col lg:flex-row relative">
         <div className="lg:hidden sticky top-0 z-10 bg-white border-b p-4">
           <button
@@ -169,7 +169,7 @@ export function Search() {
             onOpenFilters={() => setIsFilterDrawerOpen(true)}
           />
         </div>
-        
+
         <div className={`
           flex-1 relative lg:sticky lg:top-0 lg:h-screen
           ${showMap ? 'block' : 'hidden lg:block'}
