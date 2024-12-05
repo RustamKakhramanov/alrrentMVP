@@ -7,7 +7,7 @@ const SLIDES = [
     alt: 'Люди в свободном пространстве'
   },
   {
-    image: 'https://images.unsplash.com/photo-1561491431-71b89da6056a?auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1561491431-71b89da6056a?auto=format&fit=crop',
     alt: 'Успешная бизнес-встреча'
   },
   {
@@ -99,8 +99,8 @@ export function ValueProposition() {
                 <button
                   key={index}
                   className={`w-2 h-2 rounded-full transition-all duration-300 ${index === currentSlide
-                      ? 'bg-white w-6'
-                      : 'bg-white/50 hover:bg-white/75'
+                    ? 'bg-white w-6'
+                    : 'bg-white/50 hover:bg-white/75'
                     }`}
                   onClick={() => setCurrentSlide(index)}
                 />

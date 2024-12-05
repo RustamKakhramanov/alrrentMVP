@@ -47,7 +47,7 @@ export function SearchBar() {
   }, [location]);
 
   const formattedDate = selectedDate
-    ? format(selectedDate, 'd MMMM yyyy', { locale: ru })
+    ? format(selectedDate, 'd MMMM ', { locale: ru })
     : '';
 
   const formattedDateTime = selectedDate && startTime && endTime
