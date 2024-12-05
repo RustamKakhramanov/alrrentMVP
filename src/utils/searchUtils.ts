@@ -2,6 +2,7 @@ import { Space } from '../types/space';
 import { SearchFilters } from '../types/search';
 import { SPACES } from '../data/spaces';
 import { LOCATIONS } from '../config/locations';
+import { ACTIVITIES } from '../config/activities';
 
 export function filterLocations(searchTerm: string): string[] {
   if (!searchTerm) {
@@ -54,6 +55,29 @@ export function filterSpaces(filters: SearchFilters): Space[] {
     
     return newSpace;
   }).filter(space => {
+    // Activity filter
+    if (filters.selectedTypes.length > 0) {
+      const selectedActivity = ACTIVITIES.find(
+        activity => activity.title === filters.selectedTypes[0]
+      );
+      
+      if (selectedActivity) {
+        // Check if the space type matches any of the allowed types for this activity
+        const isValidSpaceType = selectedActivity.spaceTypes.includes(space.type);
+        if (!isValidSpaceType) {
+          return false;
+        }
+      } else {
+        // If activity not found, check direct match with space activities
+        const hasMatchingActivity = filters.selectedTypes.some(activity => 
+          space.activities.includes(activity)
+        );
+        if (!hasMatchingActivity) {
+          return false;
+        }
+      }
+    }
+
     // Price filter
     if (filters.minPrice > 0 && space.price < filters.minPrice) {
       return false;
@@ -79,11 +103,6 @@ export function filterSpaces(filters: SearchFilters): Space[] {
       if (!filters.selectedAmenities.every(id => spaceAmenityIds.includes(id))) {
         return false;
       }
-    }
-
-    // Type filter
-    if (filters.selectedTypes.length > 0 && !filters.selectedTypes.includes(space.type)) {
-      return false;
     }
 
     return true;

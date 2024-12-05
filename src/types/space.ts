@@ -20,4 +20,6 @@ export interface Space {
   amenities: Amenity[];
   equipment: Equipment[];
   coordinates: [number, number];
+  type: string;
+  activities: string[];
 }

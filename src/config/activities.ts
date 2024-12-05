@@ -1,13 +1,13 @@
 export const ACTIVITIES = [
-  { id: 'workshop', title: 'Мастер-класс' },
-  { id: 'photoshoot', title: 'Фотосессия' },
-  { id: 'conference', title: 'Конференция' },
-  { id: 'business', title: 'Бизнес-встреча' },
-  { id: 'podcast', title: 'Подкаст' },
-  { id: 'video', title: 'Видеосъемка' },
-  { id: 'corporate', title: 'Корпоративное мероприятие' },
-  { id: 'recording', title: 'Звукозапись' },
-  { id: 'birthday', title: 'День рождения' },
-  { id: 'graduation', title: 'Выпускной' },
-  { id: 'wedding', title: 'Свадьба' }
+  { id: 'photoshoot', title: 'Фотосессия', spaceTypes: ['studio'] },
+  { id: 'video', title: 'Видеосъемка', spaceTypes: ['studio'] },
+  { id: 'podcast', title: 'Подкаст', spaceTypes: ['podcast', 'recording'] },
+  { id: 'conference', title: 'Конференция', spaceTypes: ['conference'] },
+  { id: 'business', title: 'Бизнес-встреча', spaceTypes: ['conference'] },
+  { id: 'corporate', title: 'Корпоративное мероприятие', spaceTypes: ['conference', 'banquet'] },
+  { id: 'workshop', title: 'Мастер-класс', spaceTypes: ['studio', 'conference', 'podcast'] },
+  { id: 'recording', title: 'Звукозапись', spaceTypes: ['recording', 'podcast'] },
+  { id: 'birthday', title: 'День рождения', spaceTypes: ['banquet'] },
+  { id: 'graduation', title: 'Выпускной', spaceTypes: ['banquet'] },
+  { id: 'wedding', title: 'Свадьба', spaceTypes: ['banquet'] }
 ];

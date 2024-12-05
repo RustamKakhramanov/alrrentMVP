@@ -4,6 +4,8 @@ import { PriceFilter } from './PriceFilter';
 import { CapacityFilter } from './CapacityFilter';
 import { AmenitiesFilter } from './AmenitiesFilter';
 import { SpaceTypeFilter } from './SpaceTypeFilter';
+import { trackEvent } from '../../utils/analytics';
+import { analyticsConfig } from '../../config/analytics';
 
 interface FilterDrawerProps {
   isOpen: boolean;
@@ -34,6 +36,49 @@ export function FilterDrawer({
 }: FilterDrawerProps) {
   if (!isOpen) return null;
 
+  const handlePriceChange = (min: number, max: number) => {
+    onPriceChange(min, max);
+    trackEvent(analyticsConfig.googleAnalytics.events.filterApply, {
+      filterType: 'price',
+      minPrice: min,
+      maxPrice: max
+    });
+  };
+
+  const handleCapacityChange = (range: [number, number | null]) => {
+    onCapacityChange(range);
+    trackEvent(analyticsConfig.googleAnalytics.events.filterApply, {
+      filterType: 'capacity',
+      minCapacity: range[0],
+      maxCapacity: range[1]
+    });
+  };
+
+  const handleAmenityToggle = (amenityId: string) => {
+    onAmenityToggle(amenityId);
+    trackEvent(analyticsConfig.googleAnalytics.events.filterApply, {
+      filterType: 'amenity',
+      amenityId
+    });
+  };
+
+  const handleTypeToggle = (typeId: string) => {
+    onTypeToggle(typeId);
+    trackEvent(analyticsConfig.googleAnalytics.events.filterApply, {
+      filterType: 'type',
+      typeId
+    });
+  };
+
+  const handleApplyFilters = () => {
+    trackEvent(analyticsConfig.googleAnalytics.events.filterApply, {
+      filterType: 'all',
+      filters
+    });
+    onApplyFilters();
+    onClose();
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex">
       <div className="absolute inset-0 bg-black/50" onClick={onClose} />
@@ -49,28 +94,25 @@ export function FilterDrawer({
           <PriceFilter
             minPrice={filters.minPrice}
             maxPrice={filters.maxPrice}
-            onPriceChange={onPriceChange}
+            onPriceChange={handlePriceChange}
           />
           <CapacityFilter
             selectedCapacity={filters.selectedCapacity}
-            onCapacityChange={onCapacityChange}
+            onCapacityChange={handleCapacityChange}
           />
           <AmenitiesFilter
             selectedAmenities={filters.selectedAmenities}
-            onAmenityToggle={onAmenityToggle}
+            onAmenityToggle={handleAmenityToggle}
           />
           <SpaceTypeFilter
             selectedTypes={filters.selectedTypes}
-            onTypeToggle={onTypeToggle}
+            onTypeToggle={handleTypeToggle}
           />
         </div>
 
         <div className="sticky bottom-0 bg-white border-t p-4">
           <button
-            onClick={() => {
-              onApplyFilters();
-              onClose();
-            }}
+            onClick={handleApplyFilters}
             className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors"
           >
             Применить фильтры

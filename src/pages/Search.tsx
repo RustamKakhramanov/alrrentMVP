@@ -6,10 +6,12 @@ import { SearchList } from '../components/SearchList/SearchList';
 import { FilterDrawer } from '../components/SearchFilters/FilterDrawer';
 import { SearchFilters } from '../types/search';
 import { filterSpaces, getDistrictCoordinates } from '../utils/searchUtils';
+import { trackEvent } from '../utils/analytics';
+import { analyticsConfig } from '../config/analytics';
 
 export function Search() {
   const [selectedSpace, setSelectedSpace] = useState<number | null>(null);
-  const [showMap, setShowMap] = useState(false);
+  const [showMap, setShowMap] = useState(window.innerWidth >= 1024);
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
   const [filters, setFilters] = useState<SearchFilters>({
     minPrice: 0,
@@ -28,6 +30,15 @@ export function Search() {
   const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setShowMap(window.innerWidth >= 1024);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const activity = searchParams.get('activity');
@@ -60,12 +71,24 @@ export function Search() {
     const newFilters = { ...filters, minPrice: min, maxPrice: max };
     setFilters(newFilters);
     setSearchResults(filterSpaces(newFilters));
+    
+    trackEvent(analyticsConfig.googleAnalytics.events.filterApply, {
+      filterType: 'price',
+      minPrice: min,
+      maxPrice: max
+    });
   };
 
   const handleCapacityChange = (range: [number, number | null]) => {
     const newFilters = { ...filters, selectedCapacity: range };
     setFilters(newFilters);
     setSearchResults(filterSpaces(newFilters));
+    
+    trackEvent(analyticsConfig.googleAnalytics.events.filterApply, {
+      filterType: 'capacity',
+      minCapacity: range[0],
+      maxCapacity: range[1]
+    });
   };
 
   const handleAmenityToggle = (amenityId: string) => {
@@ -77,6 +100,11 @@ export function Search() {
     };
     setFilters(newFilters);
     setSearchResults(filterSpaces(newFilters));
+    
+    trackEvent(analyticsConfig.googleAnalytics.events.filterApply, {
+      filterType: 'amenity',
+      amenityId
+    });
   };
 
   const handleTypeToggle = (typeId: string) => {
@@ -88,6 +116,11 @@ export function Search() {
     };
     setFilters(newFilters);
     setSearchResults(filterSpaces(newFilters));
+    
+    trackEvent(analyticsConfig.googleAnalytics.events.filterApply, {
+      filterType: 'type',
+      typeId
+    });
   };
 
   const handleRemoveFilter = (type: string, value?: string) => {
@@ -112,19 +145,40 @@ export function Search() {
     }
     setFilters(newFilters);
     setSearchResults(filterSpaces(newFilters));
+    
+    trackEvent(analyticsConfig.googleAnalytics.events.filterRemove, {
+      filterType: type,
+      value
+    });
   };
 
   const handleSpaceSelect = (id: number) => {
     setSelectedSpace(id);
     navigate(`/spaces/${id}`);
+    
+    trackEvent(analyticsConfig.googleAnalytics.events.spaceSelect, {
+      spaceId: id
+    });
+  };
+
+  const handleApplyFilters = () => {
+    const results = filterSpaces(filters);
+    setSearchResults(results);
+    setIsFilterDrawerOpen(false);
+    
+    trackEvent(analyticsConfig.googleAnalytics.events.filterApply, {
+      filterType: 'all',
+      filters,
+      resultsCount: results.length
+    });
   };
 
   return (
     <div className="h-screen flex flex-col">
       <div className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link
-            to="/"
+          <Link 
+            to="/" 
             className="inline-flex items-center text-gray-600 hover:text-gray-900"
           >
             <ArrowLeft className="w-5 h-5 mr-2" />
@@ -135,7 +189,7 @@ export function Search() {
           </div>
         </div>
       </div>
-
+      
       <div className="flex-1 flex flex-col lg:flex-row relative">
         <div className="lg:hidden sticky top-0 z-10 bg-white border-b p-4">
           <button
@@ -169,7 +223,7 @@ export function Search() {
             onOpenFilters={() => setIsFilterDrawerOpen(true)}
           />
         </div>
-
+        
         <div className={`
           flex-1 relative lg:sticky lg:top-0 lg:h-screen
           ${showMap ? 'block' : 'hidden lg:block'}
@@ -191,6 +245,7 @@ export function Search() {
         onCapacityChange={handleCapacityChange}
         onAmenityToggle={handleAmenityToggle}
         onTypeToggle={handleTypeToggle}
+        onApplyFilters={handleApplyFilters}
       />
     </div>
   );
