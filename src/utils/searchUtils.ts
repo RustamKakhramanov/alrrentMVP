@@ -34,26 +34,29 @@ export function filterSpaces(filters: SearchFilters, spaceType?: string): Space[
 
   if (spaceType) {
     data = Object.values(SPACES).filter(space => {
-      switch (spaceType) {
-        case 'photo':
-          if (space.type !== 'studio') return false;
-          break;
-        case 'podcast':
-          if (!['podcast', 'recording'].includes(space.type)) return false;
-          break;
-        case 'event':
-          if (!['event', 'conference'].includes(space.type)) return false;
-          break;
-        case 'mastermind':
-          if (!['meeting', 'conference'].includes(space.type)) return false;
-          break;
-        case 'conference':
-          if (space.type !== 'conference') return false;
-          break;
-        case 'workshop':
-          if (!['event', 'workshop'].includes(space.type)) return false;
-          break;
+      if (spaceType) {
+        switch (spaceType) {
+          case 'photo':
+            if (space.type !== 'studio') return false;
+            break;
+          case 'podcast':
+            if (!['podcast', 'recording'].includes(space.type)) return false;
+            break;
+          case 'event':
+            if (!['event', 'conference'].includes(space.type)) return false;
+            break;
+          case 'mastermind':
+            if (!['meeting', 'conference'].includes(space.type)) return false;
+            break;
+          case 'conference':
+            if (space.type !== 'conference') return false;
+            break;
+          case 'workshop':
+            if (!['event', 'workshop'].includes(space.type)) return false;
+            break;
+        }
       }
+      return true;
     });
   }
 
