@@ -4,7 +4,7 @@ export const SPACES: Record<number, Space> = {
   1: {
     id: 1,
     title: 'Студия фото Enjoy',
-    location: 'Алматы, Медеуский район',
+    location: 'Алматы, Алмалинский район, ул. Жибек Жолы',
     price: 12000,
     capacity: 15,
     rating: 4.8,
@@ -31,12 +31,12 @@ export const SPACES: Record<number, Space> = {
       { id: 'reflectors', name: 'Отражатели' },
       { id: 'monitor', name: 'Монитор для просмотра' }
     ],
-    coordinates: [76.945678, 43.242345]
+    coordinates: [76.928732, 43.251484] // Алмалинский район, Жибек Жолы
   },
   2: {
     id: 2,
     title: 'Студия звукозаписи PRO',
-    location: 'Алматы, Бостандыкский район',
+    location: 'Алматы, Алмалинский район, ул. Байтурсынова',
     price: 8000,
     capacity: 8,
     rating: 4.7,
@@ -61,12 +61,12 @@ export const SPACES: Record<number, Space> = {
       { id: 'headphones', name: 'Наушники Sennheiser HD600' },
       { id: 'protools', name: 'Pro Tools Ultimate' }
     ],
-    coordinates: [76.891234, 43.235678]
+    coordinates: [76.938732, 43.241484] // Алмалинский район, Байтурсынова
   },
   3: {
     id: 3,
     title: 'Конференц-зал «Премиум»',
-    location: 'Алматы, Алмалинский район',
+    location: 'Алматы, Алмалинский район, ул. Сатпаева',
     price: 20000,
     capacity: 100,
     rating: 4.9,
@@ -91,12 +91,12 @@ export const SPACES: Record<number, Space> = {
       { id: 'laptop', name: 'Ноутбук' },
       { id: 'clicker', name: 'Презентер' }
     ],
-    coordinates: [76.898765, 43.258901]
+    coordinates: [76.918732, 43.261484] // Алмалинский район, Сатпаева
   },
   4: {
     id: 4,
     title: 'Студия подкастов',
-    location: 'Алматы, Алмалинский район',
+    location: 'Алматы, Алмалинский район, ул. Гоголя',
     price: 6000,
     capacity: 4,
     rating: 4.8,
@@ -119,7 +119,7 @@ export const SPACES: Record<number, Space> = {
       { id: 'headphones', name: 'Наушники Audio-Technica' },
       { id: 'mixer', name: 'Микшерный пульт Rodecaster Pro' }
     ],
-    coordinates: [76.898765, 43.258901]
+    coordinates: [76.933732, 43.256484] // Алмалинский район, Гоголя
   },
   5: {
     id: 5,

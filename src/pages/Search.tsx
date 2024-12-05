@@ -1,40 +1,123 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import Map, { Marker, NavigationControl } from 'react-map-gl';
-import { SearchResults } from '../components/SearchResults';
-import { SearchFilters } from '../components/SearchFilters';
-import { ArrowLeft } from 'lucide-react';
-import { SPACES } from '../data/spaces';
-import 'mapbox-gl/dist/mapbox-gl.css';
-
-const MAPBOX_TOKEN = 'pk.eyJ1IjoiYWxscmVudCIsImEiOiJjbHRwOWF1NWowMDFqMnFxdmQyNnBqcXNnIn0.Zy-YXQwW0jF7Jx9Y3K4yqw';
-
-const ALMATY_COORDINATES = {
-  latitude: 43.238949,
-  longitude: 76.889709,
-};
+import { ArrowLeft, Map as MapIcon, X } from 'lucide-react';
+import { SearchMap } from '../components/SearchMap/SearchMap';
+import { SearchList } from '../components/SearchList/SearchList';
+import { FilterDrawer } from '../components/SearchFilters/FilterDrawer';
+import { SearchFilters } from '../types/search';
+import { filterSpaces, getDistrictCoordinates } from '../utils/searchUtils';
 
 export function Search() {
   const [selectedSpace, setSelectedSpace] = useState<number | null>(null);
-  const [searchResults, setSearchResults] = useState(Object.values(SPACES));
-  const [viewport, setViewport] = useState({
-    ...ALMATY_COORDINATES,
-    zoom: 12
+  const [showMap, setShowMap] = useState(true);
+  const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
+  const [filters, setFilters] = useState<SearchFilters>({
+    minPrice: 0,
+    maxPrice: 0,
+    selectedCapacity: [0, null],
+    selectedAmenities: [],
+    selectedTypes: [],
+    location: '',
+    date: null,
+    startTime: '',
+    endTime: ''
   });
+  const [searchResults, setSearchResults] = useState(filterSpaces(filters));
+  const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number } | null>(null);
 
   const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const activity = searchParams.get('activity');
 
   useEffect(() => {
-    if (activity) {
-      const filteredResults = Object.values(SPACES).filter(space => 
-        space.title.toLowerCase().includes(activity.toLowerCase())
-      );
-      setSearchResults(filteredResults.length > 0 ? filteredResults : Object.values(SPACES));
+    const activity = searchParams.get('activity');
+    const locationParam = searchParams.get('location');
+    const date = searchParams.get('date');
+    const startTime = searchParams.get('startTime');
+    const endTime = searchParams.get('endTime');
+
+    const newFilters = {
+      ...filters,
+      selectedTypes: activity ? [activity] : [],
+      location: locationParam || '',
+      date: date ? new Date(date) : null,
+      startTime: startTime || '',
+      endTime: endTime || ''
+    };
+
+    setFilters(newFilters);
+    setSearchResults(filterSpaces(newFilters));
+
+    if (locationParam) {
+      const coordinates = getDistrictCoordinates(locationParam);
+      if (coordinates) {
+        setMapCenter(coordinates);
+      }
     }
-  }, [activity]);
+  }, [location.search]);
+
+  const handlePriceChange = (min: number, max: number) => {
+    const newFilters = { ...filters, minPrice: min, maxPrice: max };
+    setFilters(newFilters);
+    setSearchResults(filterSpaces(newFilters));
+  };
+
+  const handleCapacityChange = (range: [number, number | null]) => {
+    const newFilters = { ...filters, selectedCapacity: range };
+    setFilters(newFilters);
+    setSearchResults(filterSpaces(newFilters));
+  };
+
+  const handleAmenityToggle = (amenityId: string) => {
+    const newFilters = {
+      ...filters,
+      selectedAmenities: filters.selectedAmenities.includes(amenityId)
+        ? filters.selectedAmenities.filter(id => id !== amenityId)
+        : [...filters.selectedAmenities, amenityId]
+    };
+    setFilters(newFilters);
+    setSearchResults(filterSpaces(newFilters));
+  };
+
+  const handleTypeToggle = (typeId: string) => {
+    const newFilters = {
+      ...filters,
+      selectedTypes: filters.selectedTypes.includes(typeId)
+        ? filters.selectedTypes.filter(id => id !== typeId)
+        : [...filters.selectedTypes, typeId]
+    };
+    setFilters(newFilters);
+    setSearchResults(filterSpaces(newFilters));
+  };
+
+  const handleRemoveFilter = (type: string, value?: string) => {
+    const newFilters = { ...filters };
+    switch (type) {
+      case 'minPrice':
+        newFilters.minPrice = 0;
+        break;
+      case 'maxPrice':
+        newFilters.maxPrice = 0;
+        break;
+      case 'amenity':
+        newFilters.selectedAmenities = filters.selectedAmenities.filter(id => id !== value);
+        break;
+      case 'type':
+        newFilters.selectedTypes = filters.selectedTypes.filter(id => id !== value);
+        break;
+      case 'location':
+        newFilters.location = '';
+        setMapCenter(null);
+        break;
+    }
+    setFilters(newFilters);
+    setSearchResults(filterSpaces(newFilters));
+  };
+
+  const handleSpaceSelect = (id: number) => {
+    setSelectedSpace(id);
+    navigate(`/spaces/${id}`);
+  };
 
   return (
     <div className="h-screen flex flex-col">
@@ -53,53 +136,62 @@ export function Search() {
         </div>
       </div>
       
-      <div className="flex-1 flex flex-col lg:flex-row">
-        <div className="w-full lg:w-[600px] flex-shrink-0 overflow-auto">
-          <SearchFilters />
-          <SearchResults 
+      <div className="flex-1 flex flex-col lg:flex-row relative">
+        <div className="lg:hidden sticky top-0 z-10 bg-white border-b p-4">
+          <button
+            onClick={() => setShowMap(!showMap)}
+            className="w-full flex items-center justify-center space-x-2 bg-black text-white px-4 py-2 rounded-lg"
+          >
+            {showMap ? (
+              <>
+                <X className="w-5 h-5" />
+                <span>Скрыть карту</span>
+              </>
+            ) : (
+              <>
+                <MapIcon className="w-5 h-5" />
+                <span>Показать карту</span>
+              </>
+            )}
+          </button>
+        </div>
+
+        <div className={`
+          w-full lg:w-[600px] flex-shrink-0
+          ${showMap ? 'hidden lg:block' : 'block'}
+        `}>
+          <SearchList
             spaces={searchResults}
             selectedSpace={selectedSpace}
-            onSpaceSelect={setSelectedSpace}
+            onSpaceSelect={handleSpaceSelect}
+            filters={filters}
+            onRemoveFilter={handleRemoveFilter}
+            onOpenFilters={() => setIsFilterDrawerOpen(true)}
           />
         </div>
         
-        <div className="hidden lg:block flex-1 relative">
-          <Map
-            {...viewport}
-            onMove={evt => setViewport(evt.viewState)}
-            style={{ width: '100%', height: '100%' }}
-            mapStyle="mapbox://styles/mapbox/light-v11"
-            mapboxAccessToken={MAPBOX_TOKEN}
-          >
-            <NavigationControl position="top-right" />
-            {searchResults.map((space) => (
-              <Marker
-                key={space.id}
-                longitude={space.coordinates[0]}
-                latitude={space.coordinates[1]}
-                anchor="bottom"
-                onClick={e => {
-                  e.originalEvent.stopPropagation();
-                  setSelectedSpace(space.id);
-                  navigate(`/spaces/${space.id}`);
-                }}
-              >
-                <div
-                  className={`
-                    px-3 py-1.5 rounded-full cursor-pointer transition-all
-                    ${selectedSpace === space.id 
-                      ? 'bg-blue-600 text-white scale-110 shadow-lg' 
-                      : 'bg-white text-gray-900 shadow-md hover:scale-105'
-                    }
-                  `}
-                >
-                  {space.price.toLocaleString()} ₸
-                </div>
-              </Marker>
-            ))}
-          </Map>
+        <div className={`
+          flex-1 relative lg:sticky lg:top-0 lg:h-screen
+          ${showMap ? 'block' : 'hidden lg:block'}
+        `}>
+          <SearchMap
+            spaces={searchResults}
+            selectedSpace={selectedSpace}
+            onSpaceSelect={handleSpaceSelect}
+            center={mapCenter}
+          />
         </div>
       </div>
+
+      <FilterDrawer
+        isOpen={isFilterDrawerOpen}
+        onClose={() => setIsFilterDrawerOpen(false)}
+        filters={filters}
+        onPriceChange={handlePriceChange}
+        onCapacityChange={handleCapacityChange}
+        onAmenityToggle={handleAmenityToggle}
+        onTypeToggle={handleTypeToggle}
+      />
     </div>
   );
 }

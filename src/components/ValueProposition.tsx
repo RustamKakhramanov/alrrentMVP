@@ -68,7 +68,7 @@ export function ValueProposition() {
             </div>
           </div>
 
-          <div className="relative overflow-hidden">
+          <div className="relative">
             <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
               {SLIDES.map((slide, index) => (
                 <div
@@ -98,10 +98,11 @@ export function ValueProposition() {
               {SLIDES.map((_, index) => (
                 <button
                   key={index}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${index === currentSlide
-                    ? 'bg-white w-6'
-                    : 'bg-white/50 hover:bg-white/75'
-                    }`}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    index === currentSlide
+                      ? 'bg-white w-6'
+                      : 'bg-white/50 hover:bg-white/75'
+                  }`}
                   onClick={() => setCurrentSlide(index)}
                 />
               ))}

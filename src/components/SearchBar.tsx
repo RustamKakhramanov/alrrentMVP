@@ -6,14 +6,16 @@ import { ru } from 'date-fns/locale';
 import { MobileDateTimePicker } from './MobileDateTimePicker';
 import { DatePicker } from './DatePicker';
 import { TimePicker } from './TimePicker';
-import { LOCATIONS } from '../config/locations';
 import { ACTIVITIES } from '../config/activities';
 import { trackEvent } from '../utils/analytics';
 import { analyticsConfig } from '../config/analytics';
+import { useClickOutside } from '../hooks/useClickOutside';
+import { filterLocations } from '../utils/searchUtils';
 
 export function SearchBar() {
   const navigate = useNavigate();
-  const searchBarRef = useRef<HTMLDivElement>(null);
+  const activityRef = useRef<HTMLDivElement>(null);
+  const locationRef = useRef<HTMLDivElement>(null);
   const [eventType, setEventType] = useState('');
   const [location, setLocation] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -23,6 +25,10 @@ export function SearchBar() {
   const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
   const [showActivitySuggestions, setShowActivitySuggestions] = useState(false);
   const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
+  const [locationSuggestions, setLocationSuggestions] = useState<string[]>([]);
+
+  useClickOutside(activityRef, () => setShowActivitySuggestions(false));
+  useClickOutside(locationRef, () => setShowLocationSuggestions(false));
 
   useEffect(() => {
     const handleResize = () => {
@@ -33,6 +39,11 @@ export function SearchBar() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  useEffect(() => {
+    const suggestions = filterLocations(location);
+    setLocationSuggestions(suggestions);
+  }, [location]);
+
   const formattedDate = selectedDate
     ? format(selectedDate, 'd MMMM yyyy', { locale: ru })
     : '';
@@ -42,6 +53,14 @@ export function SearchBar() {
     : '';
 
   const handleSearch = () => {
+    const params = new URLSearchParams();
+    
+    if (eventType) params.append('activity', eventType);
+    if (location) params.append('location', location);
+    if (selectedDate) params.append('date', selectedDate.toISOString());
+    if (startTime) params.append('startTime', startTime);
+    if (endTime) params.append('endTime', endTime);
+
     trackEvent(analyticsConfig.googleAnalytics.events.search, {
       eventType,
       location,
@@ -50,14 +69,14 @@ export function SearchBar() {
       endTime
     });
     
-    navigate(`/search?activity=${eventType}`);
+    navigate(`/search?${params.toString()}`);
   };
 
   return (
-    <div className="relative w-full max-w-7xl mx-auto px-4" ref={searchBarRef}>
+    <div className="relative w-full max-w-7xl mx-auto px-4">
       <div className="flex flex-col md:flex-row md:items-center bg-white rounded-lg shadow-lg">
         {/* Activity Input */}
-        <div className="flex-1 p-4 border-b md:border-b-0 md:border-r border-gray-200">
+        <div className="flex-1 p-4 border-b md:border-b-0 md:border-r border-gray-200" ref={activityRef}>
           <label className="block text-sm text-gray-500 mb-1">Что планируете?</label>
           <div className="relative">
             <input
@@ -75,7 +94,9 @@ export function SearchBar() {
             
             {showActivitySuggestions && (
               <div className="absolute top-full left-0 right-0 bg-white mt-1 rounded-lg shadow-lg z-50 max-h-60 overflow-auto">
-                {ACTIVITIES.map((activity) => (
+                {ACTIVITIES.filter(activity => 
+                  activity.title.toLowerCase().includes(eventType.toLowerCase())
+                ).map((activity) => (
                   <button
                     key={activity.id}
                     className="w-full px-4 py-2 text-left hover:bg-gray-50"
@@ -97,7 +118,7 @@ export function SearchBar() {
         </div>
 
         {/* Location Input */}
-        <div className="flex-1 p-4 border-b md:border-b-0 md:border-r border-gray-200">
+        <div className="flex-1 p-4 border-b md:border-b-0 md:border-r border-gray-200" ref={locationRef}>
           <label className="block text-sm text-gray-500 mb-1">Где?</label>
           <div className="relative">
             <input
@@ -115,27 +136,21 @@ export function SearchBar() {
             
             {showLocationSuggestions && (
               <div className="absolute top-full left-0 right-0 bg-white mt-1 rounded-lg shadow-lg z-50 max-h-60 overflow-auto">
-                {Object.values(LOCATIONS).map(city => 
-                  city.districts
-                    .filter(district => 
-                      district.toLowerCase().includes(location.toLowerCase())
-                    )
-                    .map(district => (
-                      <button
-                        key={district}
-                        className="w-full px-4 py-2 text-left hover:bg-gray-50"
-                        onClick={() => {
-                          setLocation(`${city.city}, ${district}`);
-                          setShowLocationSuggestions(false);
-                          trackEvent(analyticsConfig.googleAnalytics.events.locationSelect, {
-                            location: `${city.city}, ${district}`
-                          });
-                        }}
-                      >
-                        {`${city.city}, ${district}`}
-                      </button>
-                    ))
-                )}
+                {locationSuggestions.map((suggestion) => (
+                  <button
+                    key={suggestion}
+                    className="w-full px-4 py-2 text-left hover:bg-gray-50"
+                    onClick={() => {
+                      setLocation(suggestion);
+                      setShowLocationSuggestions(false);
+                      trackEvent(analyticsConfig.googleAnalytics.events.locationSelect, {
+                        location: suggestion
+                      });
+                    }}
+                  >
+                    {suggestion}
+                  </button>
+                ))}
               </div>
             )}
           </div>
