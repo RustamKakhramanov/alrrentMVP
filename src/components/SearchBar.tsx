@@ -234,6 +234,19 @@ export function SearchBar() {
               </div>
             </div>
           )}
+          {/* Mobile Date/Time Picker */}
+          {isMobileView && (
+            <MobileDateTimePicker
+              isOpen={isDateTimePickerOpen}
+              onClose={() => setIsDateTimePickerOpen(false)}
+              selectedDate={selectedDate}
+              startTime={startTime}
+              endTime={endTime}
+              onDateSelect={setSelectedDate}
+              onStartTimeChange={setStartTime}
+              onEndTimeChange={setEndTime}
+            />
+          )}
         </div>
 
         {/* Search Button */}
@@ -247,19 +260,7 @@ export function SearchBar() {
         </div>
       </div>
 
-      {/* Mobile Date/Time Picker */}
-      {isMobileView && (
-        <MobileDateTimePicker
-          isOpen={isDateTimePickerOpen}
-          onClose={() => setIsDateTimePickerOpen(false)}
-          selectedDate={selectedDate}
-          startTime={startTime}
-          endTime={endTime}
-          onDateSelect={setSelectedDate}
-          onStartTimeChange={setStartTime}
-          onEndTimeChange={setEndTime}
-        />
-      )}
+
     </div>
   );
 }

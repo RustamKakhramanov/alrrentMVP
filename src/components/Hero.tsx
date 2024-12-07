@@ -7,10 +7,10 @@ export function Hero() {
   const { content } = useSpaceType();
 
   return (
-    <div className="relative min-h-[600px] md:h-[600px] flex items-center justify-center">
+    <div className="relative min-h-[600px] md:h-[600px] pt-10 flex items-center justify-center">
       <BackgroundSlideshow />
-      
-      <div className="relative z-10 text-center px-4 pt-20 md:pt-0">
+
+      <div className="relative z-10 text-center px-4 pt-20 pb-10 md:pt-0">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
           {content.heroTitle.split('\n').map((line, index) => (
             <React.Fragment key={index}>
