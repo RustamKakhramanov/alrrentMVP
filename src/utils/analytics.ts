@@ -5,10 +5,9 @@ import { sendTelegramMessage } from '../services/telegram';
 const GA_TRACKING_ID = import.meta.env.VITE_GA_TRACKING_ID;
 const YM_COUNTER_ID = import.meta.env.VITE_YM_COUNTER_ID;
 
-// Initialize Google Analytics
-if (GA_TRACKING_ID) {
+export const initializeAnalytics = () => {
   ReactGA.initialize(GA_TRACKING_ID);
-}
+};
 
 /**
  * Track events across all analytics services
