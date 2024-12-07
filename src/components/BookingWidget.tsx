@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import { Calendar } from 'lucide-react';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
-import { DatePicker } from './DatePicker';
+import { DateRangeSelect } from './DateRangeSelect';
 import { TimePicker } from './TimePicker';
 import { trackEvent } from '../utils/analytics';
-import { analyticsConfig } from '../config/analytics';
 
 interface BookingWidgetProps {
   price: number;
@@ -14,15 +12,20 @@ interface BookingWidgetProps {
 }
 
 export function BookingWidget({ price, spaceTitle, onBookingClick }: BookingWidgetProps) {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
-  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+
+  const isBookingEnabled = startDate;
 
   const handleBookingClick = () => {
-    trackEvent(analyticsConfig.googleAnalytics.events.bookingAttempt, {
+    if (!isBookingEnabled) return;
+
+    trackEvent('booking_attempt', {
       spaceTitle,
-      date: selectedDate ? format(selectedDate, 'yyyy-MM-dd') : null,
+      startDate: startDate ? format(startDate, 'yyyy-MM-dd') : null,
+      endDate: endDate ? format(endDate, 'yyyy-MM-dd') : null,
       startTime,
       endTime
     });
@@ -37,34 +40,13 @@ export function BookingWidget({ price, spaceTitle, onBookingClick }: BookingWidg
       </div>
 
       <div className="space-y-4 mt-6">
-        {/* Date Selection */}
-        <div className="relative">
-          <button
-            onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}
-            className="w-full px-4 py-2 border rounded-lg text-left flex items-center justify-between"
-          >
-            <span className={selectedDate ? 'text-gray-900' : 'text-gray-400'}>
-              {selectedDate 
-                ? format(selectedDate, 'd MMMM yyyy', { locale: ru })
-                : 'Выберите дату'
-              }
-            </span>
-            <Calendar className="w-5 h-5 text-gray-400" />
-          </button>
-
-          {isDatePickerOpen && (
-            <div className="absolute z-10 mt-2 bg-white border rounded-lg shadow-lg p-4">
-              <DatePicker
-                selectedDate={selectedDate}
-                onDateSelect={(date) => {
-                  setSelectedDate(date);
-                  setIsDatePickerOpen(false);
-                }}
-                onClose={() => setIsDatePickerOpen(false)}
-              />
-            </div>
-          )}
-        </div>
+        {/* Date Range Selection */}
+        <DateRangeSelect
+          startDate={startDate}
+          endDate={endDate}
+          onStartDateSelect={setStartDate}
+          onEndDateSelect={setEndDate}
+        />
 
         {/* Time Selection */}
         <div className="grid grid-cols-2 gap-4">
@@ -72,19 +54,26 @@ export function BookingWidget({ price, spaceTitle, onBookingClick }: BookingWidg
             label="Время начала"
             value={startTime}
             onChange={setStartTime}
-            selectedDate={selectedDate}
+            selectedDate={startDate}
           />
           <TimePicker
             label="Время окончания"
             value={endTime}
             onChange={setEndTime}
-            selectedDate={selectedDate}
+            selectedDate={startDate}
           />
         </div>
 
         <button
           onClick={handleBookingClick}
-          className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors"
+          disabled={!isBookingEnabled}
+          className={`
+            w-full py-3 rounded-lg transition-colors
+            ${isBookingEnabled
+              ? 'bg-blue-600 text-white hover:bg-blue-700'
+              : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+            }
+          `}
         >
           Забронировать
         </button>

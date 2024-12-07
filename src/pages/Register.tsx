@@ -4,6 +4,7 @@ import { ArrowLeft } from 'lucide-react';
 import { trackEvent } from '../utils/analytics';
 import { analyticsConfig } from '../config/analytics';
 import { PhoneInput } from '../components/PhoneInput';
+import { sendTelegramMessage } from '../services/telegram';
 
 export function Register() {
   const navigate = useNavigate();
@@ -13,8 +14,9 @@ export function Register() {
     password: '',
   });
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -33,19 +35,33 @@ export function Register() {
       return;
     }
 
-    trackEvent(analyticsConfig.googleAnalytics.events.registration, {
-      method: 'phone'
-    });
+    setIsSubmitting(true);
 
-    localStorage.setItem('isLoggedIn', 'true');
-    navigate('/');
+    try {
+      await sendTelegramMessage(
+        formData.name,
+        formData.phone,
+        'Регистрация'
+      );
+
+      trackEvent(analyticsConfig.googleAnalytics.events.registration, {
+        method: 'phone'
+      });
+
+      localStorage.setItem('isLoggedIn', 'true');
+      navigate('/');
+    } catch (err) {
+      setError('Произошла ошибка при регистрации. Пожалуйста, попробуйте позже.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <div className="p-4">
-        <Link 
-          to="/" 
+        <Link
+          to="/"
           className="inline-flex items-center text-gray-600 hover:text-gray-900"
         >
           <ArrowLeft className="w-5 h-5 mr-2" />
@@ -111,9 +127,13 @@ export function Register() {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors"
+              disabled={isSubmitting}
+              className={`
+                w-full bg-blue-600 text-white py-3 rounded-lg transition-colors
+                ${isSubmitting ? 'opacity-75 cursor-not-allowed' : 'hover:bg-blue-700'}
+              `}
             >
-              Зарегистрироваться
+              {isSubmitting ? 'Регистрация...' : 'Зарегистрироваться'}
             </button>
           </form>
         </div>

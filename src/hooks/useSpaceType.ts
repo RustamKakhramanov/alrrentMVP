@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { CONTENT_TYPES } from '../config/contentTypes';
 import { setCookie, getCookie } from '../utils/cookies';
+import { trackEvent } from '../utils/analytics';
+import { analyticsConfig } from '../config/analytics';
 
 export function useSpaceType() {
   const [searchParams] = useSearchParams();
@@ -14,6 +16,12 @@ export function useSpaceType() {
     const typeParam = searchParams.get('type');
     
     if (typeParam && CONTENT_TYPES[typeParam]) {
+      // Track space type selection from URL
+      trackEvent(analyticsConfig.googleAnalytics.events.activitySelect, {
+        activityId: typeParam,
+        source: 'url_parameter'
+      });
+      
       setSpaceType(typeParam);
       setCookie('spaceType', typeParam);
     } else if (!typeParam && spaceType !== 'default') {

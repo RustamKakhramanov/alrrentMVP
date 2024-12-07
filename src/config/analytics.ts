@@ -11,8 +11,8 @@ export const analyticsConfig = {
       dateSelect: 'date_select',
       filterApply: 'filter_apply',
       footerLinkClick: 'footer_link_click',
-      bookingAttempt: 'booking_attempt',
-      feedbackSubmit: 'feedback_submit'
+      feedbackSubmit: 'feedback_submit',
+      locationSelect: 'location_select'
     }
   },
   yandexMetrika: {
@@ -28,7 +28,8 @@ export const analyticsConfig = {
       filterApply: 'filter_apply',
       footerLinkClick: 'footer_link_click',
       bookingAttempt: 'booking_attempt',
-      feedbackSubmit: 'feedback_submit'
+      feedbackSubmit: 'feedback_submit',
+      locationSelect: 'location_select'
     }
   }
 };

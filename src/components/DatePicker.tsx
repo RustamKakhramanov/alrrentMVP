@@ -7,10 +7,11 @@ interface DatePickerProps {
   selectedDate: Date | null;
   onDateSelect: (date: Date) => void;
   onClose: () => void;
+  minDate?: Date;
 }
 
-export function DatePicker({ selectedDate, onDateSelect }: DatePickerProps) {
-  const [currentMonth, setCurrentMonth] = useState(new Date());
+export function DatePicker({ selectedDate, onDateSelect, minDate }: DatePickerProps) {
+  const [currentMonth, setCurrentMonth] = useState(minDate || new Date());
   const today = startOfDay(new Date());
 
   const days = eachDayOfInterval({
@@ -21,43 +22,43 @@ export function DatePicker({ selectedDate, onDateSelect }: DatePickerProps) {
   const nextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
   const prevMonth = () => {
     const prevDate = subMonths(currentMonth, 1);
-    if (!isBefore(startOfMonth(prevDate), today)) {
+    const minAllowedDate = minDate || today;
+    if (!isBefore(startOfMonth(prevDate), minAllowedDate)) {
       setCurrentMonth(prevDate);
     }
   };
 
   const weekDays = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
 
+  const isDateDisabled = (date: Date) => {
+    const minAllowedDate = minDate || today;
+    return isBefore(date, minAllowedDate);
+  };
+
   return (
     <div className="w-full">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-medium">
+        <button 
+          onClick={prevMonth}
+          className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          disabled={isBefore(startOfMonth(subMonths(currentMonth, 1)), minDate || today)}
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+        <h2 className="text-lg font-medium">
           {format(currentMonth, 'LLLL yyyy', { locale: ru })}
         </h2>
-        <div className="flex space-x-2">
-          <button 
-            onClick={prevMonth}
-            disabled={isBefore(startOfMonth(subMonths(currentMonth, 1)), today)}
-            className={`p-2 rounded-full transition-colors ${
-              isBefore(startOfMonth(subMonths(currentMonth, 1)), today)
-                ? 'text-gray-300 cursor-not-allowed'
-                : 'hover:bg-gray-100'
-            }`}
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <button 
-            onClick={nextMonth}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
-        </div>
+        <button 
+          onClick={nextMonth}
+          className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+        >
+          <ChevronRight className="w-5 h-5" />
+        </button>
       </div>
 
       <div className="grid grid-cols-7 gap-1 mb-2">
         {weekDays.map((day) => (
-          <div key={day} className="text-center text-sm text-gray-500 font-medium py-2">
+          <div key={day} className="text-center text-sm text-gray-500 font-medium">
             {day}
           </div>
         ))}
@@ -67,20 +68,18 @@ export function DatePicker({ selectedDate, onDateSelect }: DatePickerProps) {
         {days.map((day) => {
           const isSelected = selectedDate && isSameDay(day, selectedDate);
           const isCurrentMonth = isSameMonth(day, currentMonth);
-          const isToday = isSameDay(day, today);
-          const isPast = isBefore(day, today);
+          const isDisabled = isDateDisabled(day);
 
           return (
             <button
               key={day.toString()}
-              onClick={() => !isPast && onDateSelect(day)}
-              disabled={isPast}
+              onClick={() => !isDisabled && onDateSelect(day)}
+              disabled={isDisabled}
               className={`
                 p-2 text-sm rounded-full transition-colors relative
                 ${isSelected ? 'bg-blue-600 text-white hover:bg-blue-700' : 'hover:bg-gray-100'}
                 ${!isCurrentMonth && 'text-gray-300'}
-                ${isToday && !isSelected && 'font-bold'}
-                ${isPast && 'text-gray-300 cursor-not-allowed'}
+                ${isDisabled && 'text-gray-300 cursor-not-allowed'}
               `}
             >
               {format(day, 'd')}

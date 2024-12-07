@@ -3,6 +3,7 @@ import { X, Send } from 'lucide-react';
 import { trackEvent } from '../utils/analytics';
 import { analyticsConfig } from '../config/analytics';
 import { PhoneInput } from './PhoneInput';
+import { sendTelegramMessage } from '../services/telegram';
 
 interface FeedbackModalProps {
   isOpen: boolean;
@@ -16,26 +17,43 @@ export function FeedbackModal({ isOpen, onClose, source }: FeedbackModalProps) {
     phone: '',
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
 
     if (formData.phone.length !== 11) {
-      alert('Пожалуйста, введите корректный номер телефона');
+      setError('Пожалуйста, введите корректный номер телефона');
       return;
     }
 
-    trackEvent(analyticsConfig.googleAnalytics.events.feedbackSubmit, {
-      source,
-      ...formData
-    });
+    setIsSubmitting(true);
 
-    setIsSubmitted(true);
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setFormData({ name: '', phone: '' });
-      onClose();
-    }, 2000);
+    try {
+      const success = await sendTelegramMessage(formData.name, formData.phone);
+
+      if (success) {
+        trackEvent(analyticsConfig.googleAnalytics.events.feedbackSubmit, {
+          source,
+          ...formData
+        });
+
+        setIsSubmitted(true);
+        setTimeout(() => {
+          setIsSubmitted(false);
+          setFormData({ name: '', phone: '' });
+          onClose();
+        }, 2000);
+      } else {
+        setError('Произошла ошибка при отправке. Пожалуйста, попробуйте позже.');
+      }
+    } catch (err) {
+      setError('Произошла ошибка при отправке. Пожалуйста, попробуйте позже.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -66,6 +84,12 @@ export function FeedbackModal({ isOpen, onClose, source }: FeedbackModalProps) {
               Чтобы узнать подробности, оставьте заявку и мы обязательно расскажем вам обо всех деталях
             </p>
 
+            {error && (
+              <div className="mb-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm">
+                {error}
+              </div>
+            )}
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -94,9 +118,13 @@ export function FeedbackModal({ isOpen, onClose, source }: FeedbackModalProps) {
 
               <button
                 type="submit"
-                className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors"
+                disabled={isSubmitting}
+                className={`
+                  w-full bg-blue-600 text-white py-3 rounded-lg transition-colors
+                  ${isSubmitting ? 'opacity-75 cursor-not-allowed' : 'hover:bg-blue-700'}
+                `}
               >
-                Отправить заявку
+                {isSubmitting ? 'Отправка...' : 'Отправить заявку'}
               </button>
 
               <p className="text-sm text-gray-500 text-center">

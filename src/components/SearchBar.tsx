@@ -13,32 +13,13 @@ import { useClickOutside } from '../hooks/useClickOutside';
 import { filterLocations } from '../utils/searchUtils';
 import { useSpaceType } from '../hooks/useSpaceType';
 
-const getActivityByType = (type: string | null): string => {
-  switch (type) {
-    case 'photo':
-      return 'Фотосессия';
-    case 'podcast':
-      return 'Подкаст';
-    case 'event':
-      return 'Мероприятие';
-    case 'mastermind':
-      return 'Мастермайнд';
-    case 'conference':
-      return 'Конференция';
-    case 'workshop':
-      return 'Мастер-класс';
-    default:
-      return '';
-  }
-};
-
 export function SearchBar() {
   const navigate = useNavigate();
   const { spaceType } = useSpaceType();
   const activityRef = useRef<HTMLDivElement>(null);
   const locationRef = useRef<HTMLDivElement>(null);
   const dateTimeRef = useRef<HTMLDivElement>(null);
-  const [eventType, setEventType] = useState(getActivityByType(spaceType));
+  const [eventType, setEventType] = useState('');
   const [location, setLocation] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [startTime, setStartTime] = useState('');
@@ -52,10 +33,6 @@ export function SearchBar() {
   useClickOutside(activityRef, () => setShowActivitySuggestions(false));
   useClickOutside(locationRef, () => setShowLocationSuggestions(false));
   useClickOutside(dateTimeRef, () => setIsDateTimePickerOpen(false));
-
-  useEffect(() => {
-    setEventType(getActivityByType(spaceType));
-  }, [spaceType]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -75,8 +52,10 @@ export function SearchBar() {
     ? format(selectedDate, 'd MMMM ', { locale: ru })
     : '';
 
-  const formattedDateTime = selectedDate && startTime && endTime
-    ? `${formattedDate}, ${startTime} - ${endTime}`
+  const formattedDateTime = selectedDate
+    ? startTime && endTime
+      ? `${formattedDate}, ${startTime} - ${endTime}`
+      : formattedDate
     : '';
 
   const handleSearch = () => {
@@ -163,7 +142,7 @@ export function SearchBar() {
             />
             <MapPin className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
 
-            {showLocationSuggestions && (
+            {showLocationSuggestions && locationSuggestions.length > 0 && (
               <div className="absolute top-full left-0 right-0 bg-white mt-1 rounded-lg shadow-lg z-50 max-h-60 overflow-auto">
                 {locationSuggestions.map((suggestion) => (
                   <button
@@ -194,7 +173,7 @@ export function SearchBar() {
           >
             <Calendar className="w-5 h-5 mr-2 text-gray-400" />
             <span className={formattedDateTime ? 'text-gray-900' : 'text-gray-400'}>
-              {formattedDateTime || 'Выберите дату и время'}
+              {formattedDateTime || 'Выберите дату'}
             </span>
           </button>
 
@@ -206,7 +185,7 @@ export function SearchBar() {
                   <DatePicker
                     selectedDate={selectedDate}
                     onDateSelect={setSelectedDate}
-                    onClose={() => { }}
+                    onClose={() => {}}
                   />
                   <div className="space-y-4">
                     <TimePicker
@@ -234,8 +213,8 @@ export function SearchBar() {
               </div>
             </div>
           )}
-          {/* Mobile Date/Time Picker */}
-          {isMobileView && (
+           {/* Mobile Date/Time Picker */}
+           {isMobileView && (
             <MobileDateTimePicker
               isOpen={isDateTimePickerOpen}
               onClose={() => setIsDateTimePickerOpen(false)}
