@@ -7,7 +7,7 @@ export interface ContentType {
 
 export const CONTENT_TYPES: Record<string, ContentType> = {
   default: {
-    title: 'Все пространства',
+    title: 'Ваш лучший помошник в поиске и бронировании',
     description: 'Находите и бронируйте уникальные помещения',
     heroTitle: 'Найдите идеальное место\nдля вашего мероприятия',
     heroDescription: 'Находите и бронируйте уникальные помещения для мастер-классов, конференций, записи подкастов и многого другого'

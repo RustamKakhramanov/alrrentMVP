@@ -48,15 +48,14 @@ export function SearchBar() {
     setLocationSuggestions(suggestions);
   }, [location]);
 
-  const formattedDate = selectedDate
-    ? format(selectedDate, 'd MMMM ', { locale: ru })
-    : '';
+  const getFormattedDateTime = () => {
+    if (!selectedDate) return '';
 
-  const formattedDateTime = selectedDate
-    ? startTime && endTime
-      ? `${formattedDate}, ${startTime} - ${endTime}`
-      : formattedDate
-    : '';
+    const formattedDate = format(selectedDate, 'd MMMM', { locale: ru });
+    if (!startTime) return formattedDate;
+    if (!endTime) return `${formattedDate}, ${startTime}`;
+    return `${formattedDate}, ${startTime} - ${endTime}`;
+  };
 
   const handleSearch = () => {
     const params = new URLSearchParams();
@@ -172,8 +171,8 @@ export function SearchBar() {
             className="w-full text-left py-2 text-lg focus:outline-none flex items-center"
           >
             <Calendar className="w-5 h-5 mr-2 text-gray-400" />
-            <span className={formattedDateTime ? 'text-gray-900' : 'text-gray-400'}>
-              {formattedDateTime || 'Выберите дату'}
+            <span className={getFormattedDateTime() ? 'text-gray-900' : 'text-gray-400'}>
+              {getFormattedDateTime() || 'Выберите дату'}
             </span>
           </button>
 
@@ -185,7 +184,7 @@ export function SearchBar() {
                   <DatePicker
                     selectedDate={selectedDate}
                     onDateSelect={setSelectedDate}
-                    onClose={() => {}}
+                    onClose={() => { }}
                   />
                   <div className="space-y-4">
                     <TimePicker
@@ -199,6 +198,7 @@ export function SearchBar() {
                       value={endTime}
                       onChange={setEndTime}
                       selectedDate={selectedDate}
+                      minTime={startTime}
                     />
                   </div>
                 </div>
@@ -213,8 +213,8 @@ export function SearchBar() {
               </div>
             </div>
           )}
-           {/* Mobile Date/Time Picker */}
-           {isMobileView && (
+          {/* Mobile Date/Time Picker */}
+          {isMobileView && (
             <MobileDateTimePicker
               isOpen={isDateTimePickerOpen}
               onClose={() => setIsDateTimePickerOpen(false)}
@@ -238,8 +238,6 @@ export function SearchBar() {
           </button>
         </div>
       </div>
-
-
     </div>
   );
 }
