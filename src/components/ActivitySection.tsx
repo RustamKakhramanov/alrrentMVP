@@ -34,7 +34,7 @@ const ACTIVITIES = [
   },
   {
     id: 'corporate',
-    title: 'Корпоративное мероприятие',
+    title: 'Корпоратив',
     image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&q=80'
   },
   {
