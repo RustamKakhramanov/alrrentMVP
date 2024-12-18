@@ -58,7 +58,7 @@ export function SearchMap({ spaces, selectedSpace, onSpaceSelect, center }: Sear
         { lat: 43.271484, lng: 76.948732 }
       );
       map.fitBounds(bounds);
-      
+
       const listener = google.maps.event.addListener(map, 'idle', () => {
         if (map.getZoom()! > 15) {
           map.setZoom(15);
@@ -83,11 +83,11 @@ export function SearchMap({ spaces, selectedSpace, onSpaceSelect, center }: Sear
           }}
           onClick={() => onSpaceSelect(space.id)}
           label={{
-            text: `${space.price.toLocaleString()} ₸`,
+            text: `${space.defaultPrice.toLocaleString()} ₸`,
             className: `
               px-3 py-1.5 rounded-full cursor-pointer transition-all
-              ${selectedSpace === space.id 
-                ? 'bg-blue-600 text-white' 
+              ${selectedSpace === space.id
+                ? 'bg-blue-600 text-white'
                 : 'bg-white text-gray-900'
               }
             `

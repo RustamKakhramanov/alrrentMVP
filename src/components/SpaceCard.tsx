@@ -9,12 +9,12 @@ interface SpaceCardProps {
   images: string[];
   title: string;
   location: string;
-  price: number;
+  defaultPrice: number;
   capacity: number;
   rating: number;
 }
 
-export function SpaceCard({ id, images, title, location, price, capacity, rating }: SpaceCardProps) {
+export function SpaceCard({ id, images, title, location, defaultPrice, capacity, rating }: SpaceCardProps) {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -27,11 +27,11 @@ export function SpaceCard({ id, images, title, location, price, capacity, rating
   };
 
   return (
-    <div 
+    <div
       className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow cursor-pointer"
       onClick={handleClick}
     >
-      <div 
+      <div
         className="h-48 md:h-64 bg-cover bg-center"
         style={{ backgroundImage: `url(${images[0]})` }}
       />
@@ -52,7 +52,7 @@ export function SpaceCard({ id, images, title, location, price, capacity, rating
           </div>
         </div>
         <div className="flex items-center justify-between">
-          <span className="font-semibold text-lg">{price.toLocaleString()} ₸/час</span>
+          {defaultPrice && <span className="font-semibold text-lg">{defaultPrice?.toLocaleString()} ₸/час</span>}
         </div>
       </div>
     </div>

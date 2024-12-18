@@ -105,7 +105,7 @@ export function SpaceDetails() {
                 </div>
                 <div className="lg:col-span-1 block sm:hidden">
                   <BookingWidget
-                    price={spaceDetails.price}
+                    price={spaceDetails.defaultPrice}
                     spaceTitle={spaceDetails.title}
                     onBookingClick={() => setIsBookingModalOpen(true)}
                   />
@@ -148,7 +148,7 @@ export function SpaceDetails() {
             {/* Booking widget */}
             <div className="lg:col-span-1 hidden sm:block">
               <BookingWidget
-                price={spaceDetails.price}
+                price={spaceDetails.defaultPrice}
                 spaceTitle={spaceDetails.title}
                 onBookingClick={() => setIsBookingModalOpen(true)}
               />

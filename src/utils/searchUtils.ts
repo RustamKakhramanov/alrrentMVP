@@ -108,10 +108,10 @@ export function filterSpaces(filters: SearchFilters, spaceType?: string): Space[
     }
 
     // Price filter
-    if (filters.minPrice > 0 && space.price < filters.minPrice) {
+    if (filters.minPrice > 0 && space.defaultPrice < filters.minPrice) {
       return false;
     }
-    if (filters.maxPrice > 0 && space.price > filters.maxPrice) {
+    if (filters.maxPrice > 0 && space.defaultPrice > filters.maxPrice) {
       return false;
     }
 
