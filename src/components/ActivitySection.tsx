@@ -5,57 +5,57 @@ const ACTIVITIES = [
   {
     id: 'workshop',
     title: 'Мастер-класс',
-    image: 'https://images.unsplash.com/photo-1552581234-26160f608093?auto=format&fit=crop&q=80'
+    image: '/storage/images/photo-1552581234-26160f608093.avif'
   },
   {
     id: 'photoshoot',
     title: 'Фотосессия',
-    image: 'https://images.unsplash.com/photo-1471341971476-ae15ff5dd4ea?q=80&w=3432&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+    image: '/storage/images/photo-1590650153855-d9e808231d41.avif'
   },
   {
     id: 'conference',
     title: 'Конференция',
-    image: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&q=80'
+    image: '/storage/images/photo-1505373877841-8d25f7d46678.avif'
   },
   {
     id: 'business',
     title: 'Бизнес-встреча',
-    image: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&q=80'
+    image: '/storage/images/photo-1517457373958-b7bdd4587205.avif'
   },
   {
     id: 'podcast',
     title: 'Подкаст',
-    image: 'https://images.unsplash.com/photo-1604328698692-f76ea9498e76?auto=format&fit=crop&q=80'
+    image: '/storage/images/photo-1604328698692-f76ea9498e76.avif'
   },
   {
     id: 'video',
     title: 'Видеосъемка',
-    image: 'https://images.unsplash.com/photo-1579546929662-711aa81148cf?auto=format&fit=crop&q=80'
+    image: '/storage/images/photo-1579546929662-711aa81148cf.avif'
   },
   {
     id: 'corporate',
-    title: 'Корпоратив',
-    image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&q=80'
+    title: 'Корпоративное мероприятие',
+    image: '/storage/images/photo-1511578314322-379afb476865.avif'
   },
   {
     id: 'recording',
     title: 'Звукозапись',
-    image: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&q=80'
+    image: '/storage/images/photo-1598488035139-bdbb2231ce04.avif'
   },
   {
     id: 'birthday',
     title: 'День рождения',
-    image: 'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&q=80'
+    image: '/storage/images/photo-1530103862676-de8c9debad1d.avif'
   },
   {
     id: 'graduation',
     title: 'Выпускной',
-    image: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80'
+    image: '/storage/images/photo-1523050854058-8df90110c9f1.avif'
   },
   {
     id: 'wedding',
     title: 'Свадьба',
-    image: 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80'
+    image: '/storage/images/photo-1519741497674-611481863552.avif'
   }
 ];
 

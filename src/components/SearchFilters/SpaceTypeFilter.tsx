@@ -1,5 +1,3 @@
-import React from 'react';
-
 const SPACE_TYPES = [
   { id: 'studio', label: 'Фотостудия' },
   { id: 'meeting', label: 'Переговорная' },

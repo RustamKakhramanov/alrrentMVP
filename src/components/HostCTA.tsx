@@ -19,7 +19,7 @@ export function HostCTA() {
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div className="relative h-[600px] lg:h-900">
             <img
-              src="https://images.unsplash.com/photo-1610879247468-ba0c12f0d709?auto=format&fit=crop&q=80"
+              src="/storage/images/photo-1610879247468-ba0c12f0d709.avif"
               alt="Успешный арендодатель с ключами"
               className="absolute inset-0 w-full h-full object-cover object-top"
             />

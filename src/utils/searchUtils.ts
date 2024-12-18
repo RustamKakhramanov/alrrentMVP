@@ -30,10 +30,10 @@ export function filterLocations(searchTerm: string): string[] {
 }
 
 export function filterSpaces(filters: SearchFilters, spaceType?: string): Space[] {
-  let data = Object.values(SPACES);
+  let data = SPACES;
 
   if (spaceType) {
-    data = Object.values(SPACES).filter(space => {
+    data = SPACES.filter(space => {
       if (spaceType) {
         switch (spaceType) {
           case 'photo':

@@ -13,7 +13,7 @@ export function SpaceDetails() {
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const { id } = useParams();
 
-  const spaceDetails = id ? SPACES[Number(id)] : null;
+  const spaceDetails = id ? SPACES.find((i) => i.id == Number(id)) : null;
 
   if (!spaceDetails) {
     return (

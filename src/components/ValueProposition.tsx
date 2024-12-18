@@ -3,22 +3,19 @@ import { Calendar, Clock, CheckCircle } from 'lucide-react';
 
 const SLIDES = [
   {
-    image: 'https://plus.unsplash.com/premium_photo-1677087122691-63f3287422c0?auto=format&fit=crop&q=80',
+    image: '/storage/images/premium_photo-1677087122691-63f3287422c0.avif',
     alt: 'Люди в свободном пространстве'
   },
   {
-    image: 'https://images.unsplash.com/photo-1561491431-71b89da6056a?auto=format&fit=crop',
+    image: '/storage/images/photo-1561491431-71b89da6056a.avif',
     alt: 'Успешная бизнес-встреча'
   },
   {
-    image: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80',
+    image: '/storage/images/premium_photo-1677087121940-8ec58a497a38.avif',
     alt: 'Заключение сделки'
   },
 
-  {
-    image: 'https://plus.unsplash.com/premium_photo-1677087121940-8ec58a497a38?auto=format&fit=crop&q=80',
-    alt: 'Успешное партнерство'
-  },
+
 ];
 
 export function ValueProposition() {

@@ -2,19 +2,19 @@ import React, { useState, useEffect } from 'react';
 
 const SLIDES = [
   {
-    url: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678',
+    url: '/storage/images/photo-1505373877841-8d25f7d46678.avif',
     alt: 'Мастер-класс'
   },
   {
-    url: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205',
+    url: '/storage/images/photo-1517457373958-b7bdd4587205.avif',
     alt: 'Творческое пространство'
   },
   {
-    url: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205',
+    url: '/storage/images/photo-1517457373958-b7bdd4587205.avif',
     alt: 'Фотостудия'
   },
   {
-    url: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3',
+    url: '/storage/images/photo-1519167758481-83f550bb49b3.avif',
     alt: 'Лекционный зал'
   },
 
@@ -42,7 +42,7 @@ export function BackgroundSlideshow() {
             ${index === currentSlide ? 'opacity-100' : 'opacity-0'}
           `}
           style={{
-            backgroundImage: `url(${slide.url}?auto=format&fit=crop&q=80)`,
+            backgroundImage: `url(${slide.url})`,
           }}
           aria-hidden={index !== currentSlide}
         />

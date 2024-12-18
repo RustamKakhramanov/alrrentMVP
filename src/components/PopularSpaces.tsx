@@ -1,6 +1,4 @@
-import React from 'react';
 import { SpaceCard } from './SpaceCard';
-import { SPACES } from '../data/spaces';
 import { filterSpaces } from '../utils/searchUtils';
 import { useSpaceType } from '../hooks/useSpaceType';
 
@@ -10,13 +8,13 @@ interface PopularSpacesProps {
 
 export function PopularSpaces({ spaceType }: PopularSpacesProps) {
   const { content } = useSpaceType();
-  const filteredSpaces = filterSpaces({ 
+  const filteredSpaces = filterSpaces({
     minPrice: 0,
     maxPrice: 0,
     selectedCapacity: [0, null],
     selectedAmenities: [],
     selectedTypes: []
-  }, spaceType);
+  }, String(spaceType));
 
   const popularSpaces = filteredSpaces
     .sort((a, b) => b.rating - a.rating)
