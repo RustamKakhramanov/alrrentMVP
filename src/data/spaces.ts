@@ -21,7 +21,8 @@ const defaultAvailability: AvailabilitySchedule = {
 export const SPACES: Array<Space> = [
   {
     id: 1,
-    title: 'Студия фото Enjoy',
+    title: 'Студия фотографии с 7 фотозонами',
+    name: 'Enjoy Studio',
     location: 'Алматы, Алмалинский район, ул. Жибек Жолы',
     contacts: [
       { id: 'phone', value: '+77713598901' },

@@ -20,6 +20,7 @@ export interface Contact {
 export interface Space {
   id: number;
   title: string;
+  name: string;
   location: string;
   defaultPrice: number;
   capacity: number;
