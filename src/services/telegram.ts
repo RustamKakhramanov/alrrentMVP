@@ -1,7 +1,12 @@
 const TELEGRAM_BOT_TOKEN = '475221440:AAHNDQCALXnKo_WL2lE7PiWtiXLZ6oGCOw0';
 const TELEGRAM_CHAT_ID = '488552094';
+const TELEGRAM_ENABLED = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || false;
 
 export async function sendTelegramMessage(name: string, phone: string, source: string = '') {
+  if (!TELEGRAM_ENABLED) {
+    return true;
+  }
+
   const telegramApiUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
 
   try {
