@@ -112,7 +112,8 @@ export function SpaceDetails() {
                 </div>
                 <div>
                   <h2 className="text-xl font-semibold mb-3">Описание</h2>
-                  <p className="text-gray-600">{spaceDetails.description}</p>
+                  <p className="text-gray-600" dangerouslySetInnerHTML={{ __html: spaceDetails.description }} />
+
                 </div>
 
                 <div>
@@ -129,7 +130,7 @@ export function SpaceDetails() {
                   </div>
                 </div>
 
-                <div>
+                {spaceDetails.equipment && spaceDetails.equipment.length > 0 && <div>
                   <h2 className="text-xl font-semibold mb-3">Оборудование</h2>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {spaceDetails.equipment.map((item) => (
@@ -141,7 +142,7 @@ export function SpaceDetails() {
                       </div>
                     ))}
                   </div>
-                </div>
+                </div>}
               </div>
             </div>
 

@@ -146,6 +146,22 @@ export const ACTIVITIES: Activity[] = [
     requirements: ['sound', 'mirrors']
   },
   {
+    id: 'psy-consultation',
+    title: 'Психологические консультации',
+    description: 'Танцевальные занятия',
+    icon: 'Music',
+    spaceTypes: ['dance'],
+    requirements: ['sound', 'mirrors']
+  },
+  {
+    id: 'сonsultation',
+    title: 'Прием-консультация',
+    description: 'Танцевальные занятия',
+    icon: 'Music',
+    spaceTypes: ['dance'],
+    requirements: ['sound', 'mirrors']
+  },
+  {
     id: 'yoga',
     title: 'Йога',
     description: 'Занятия йогой',
