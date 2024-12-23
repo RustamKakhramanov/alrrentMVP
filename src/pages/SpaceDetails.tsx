@@ -7,6 +7,7 @@ import { BookingModal } from '../components/BookingModal';
 import { HostCTA } from '../components/HostCTA';
 import { BookingWidget } from '../components/BookingWidget';
 import { SPACES } from '../data/spaces';
+import { ImageGallery } from '../components/ImageGallery';
 
 export function SpaceDetails() {
   const [selectedImage, setSelectedImage] = useState(0);
@@ -51,33 +52,10 @@ export function SpaceDetails() {
 
         {/* Image gallery */}
         <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="md:col-span-3 aspect-[16/9] rounded-lg overflow-hidden">
-              <img
-                src={spaceDetails.images[selectedImage]}
-                alt={spaceDetails.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="grid grid-cols-4 md:grid-cols-1 gap-4">
-              {spaceDetails.images.map((image, index) => (
-                <div
-                  key={index}
-                  className={`
-                    aspect-[4/3] rounded-lg overflow-hidden cursor-pointer
-                    ${selectedImage === index ? 'ring-2 ring-blue-500' : ''}
-                  `}
-                  onClick={() => setSelectedImage(index)}
-                >
-                  <img
-                    src={image}
-                    alt={`${spaceDetails.title} ${index + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
+          <ImageGallery
+            images={spaceDetails.images}
+            title={spaceDetails.title}
+          />
         </div>
 
         {/* Content */}
