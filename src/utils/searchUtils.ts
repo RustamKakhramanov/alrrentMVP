@@ -67,6 +67,19 @@ export function filterSpaces(filters: SearchFilters, spaceType?: string): Space[
 
     // If location filter is active, update the space location
     if (filters.location) {
+      const [city, district] = filters.location.split(',').map(part => part.trim());
+
+      if (!space.location.includes(city)) {
+        return false;
+      }
+
+      if (district && !space.location.includes(district)) {
+        if (space.location.includes(city)) {
+          return true;
+        }
+        return false;
+      }
+
       newSpace.location = filters.location;
 
       // Update coordinates based on the selected district
